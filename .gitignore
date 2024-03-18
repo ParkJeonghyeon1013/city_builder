@@ -2,7 +2,9 @@
 *.jpg
 *.mov
 
-bhild
+
+
+build_data/*
 
 */render/*
 
