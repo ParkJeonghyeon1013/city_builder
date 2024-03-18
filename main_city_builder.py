@@ -6,7 +6,7 @@ import importlib
 
 from PySide2 import QtCore, QtWidgets
 
-sys.path.append("D:/git_workspace/usd_IO")
+sys.path.append("D:/git_workspace/city_builder")
 # sys.path.append("/")
 
 # from main.resource.ui.sample_window4_ui import Ui_MainWindow
@@ -41,10 +41,12 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle("CityBuilder_ver.1.0")
 
         # variable
+        filepath = os.getcwd()
         self.__grid_path = ''
         self.__osm_path = ''
         self.__img_source_path = ''
-        self.__save_path = 'D:/git_workspace/usd_IO/build_data'
+        self.__save_path = os.path.join(filepath,'build_data')
+        print(self.__save_path)
         self.__form = {'hip': '', 'tex': '', 'mov': '', 'usd': ''}
         self.__save_path_lst = list()
         self.__render_img_path = dict()

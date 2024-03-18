@@ -103,13 +103,13 @@ class GrayScaleCity:
         n_mantra.setInput(0, n_part_idx)
         n_mantra.parm("pdg_cachemode").set(2)
         n_mantra.parm("override_camerares").set(1)
-        n_mantra.parm("vm_picture").set("$HIP/render/$HIPNAME/$HIPNAME.$OS.`@wedgenum`.$F.jpg")
+        n_mantra.parm("vm_picture").set("$HIP/render/$HIPNAME_$OS_`@wedgenum`/$HIPNAME.`@wedgenum`.$F.jpg")
         self.align_node_pos(n_mantra, n_part_idx.position(), 0, -2)
 
         # obj > topnet > overlaytext
         n_overlaytext = n_topnet.createNode("ropcomposite")
         n_overlaytext.setInput(0, n_mantra)
-        n_overlaytext.parm("copoutput").set("$HIP/render/$HIPNAME/$HIPNAME.$OS.`@wedgenum`.$F.jpg")
+        n_overlaytext.parm("copoutput").set("$HIP/render/$HIPNAME_$OS_`@wedgenum`/$HIPNAME.$OS.`@wedgenum`.$F.jpg")
         self.align_node_pos(n_overlaytext, n_mantra.position(), 0, -2)
 
         n_overlaytext_in = hou.node(n_overlaytext.path() + '/c')
@@ -152,8 +152,8 @@ class GrayScaleCity:
         print("\n렌더 시작!!")
 
         # Mantra render set >> framerange
-        # n_mantra.parm("framegeneration").set(1)
-        # n_topnet.cookAllOutputWorkItems(True)
+        n_mantra.parm("framegeneration").set(1)
+        n_topnet.cookAllOutputWorkItems(True)
         print("\n cook 했다면 seq 뽑을 수 있음!")
 
 
