@@ -1,0 +1,276 @@
+a.createDigitalAsset(
+name = "HDA_test", hda_file_name = "/home/rapa/git_workspace/usd_IO/hda_test.hda",
+description = "testetstetstpla",
+min_num_inputs = 0,max_num_inputs = 0)
+
+
+createDigitalAsset(name="HDA_test", hda_file_name = "/home/rapa/hda_test.hda",
+description = "testetstetstpla",
+file_type = hou.fileType.Image, string_type = hou.node('/obj/STREET_GRID/subnet2/trace1'))
+
+
+temp1 = hou.StringParmTemplate(name='file', label='Image_input', num_components=1, string_type=hou.parm('/obj/STREET_GRID/subnet2/trace1/file'))
+
+
+createDigitalAsset(name="HDA_test", hda_file_name = "/home/rapa/hda_test.hda",
+description = "testetstetstpla",
+file_type = hou.fileType.Image, string_type = hou.node('/obj/STREET_GRID/subnet2/trace1'))
+
+
+
+temp1 = hou.StringParmTemplate(name='file', label='Image_input', num_components=1, default_value=hou.parm('/obj/STREET_GRID/subnet2/trace1/file'))
+
+
+---------
+
+p = hou.parm('/obj/geo1/subnet1/trace1/file')
+p_str = p.eval()
+temp1 = hou.StringParmTemplate(name='file', label='Image_input', num_components=1, default_value=p_str)
+subnet.setParmTemplateGroup(ptg)
+
+
+
+----------------------
+
+
+temp1 = hou.StringParmTemplate(name='file', label='Image_input', num_components=1, default_value=hou.parm('/obj/STREET_GRID/subnet2/trace1/file'), script_callback_language=hou.sciptLanguage.Hscript)
+
+
+
+
+---------------------------
+
+save_as_embedded=True
+
+sub = hou.node('/obj/geo1/subnet1')
+pg = sub.parmTemplateGroup()
+temp1 = hou.StringParmTemplate('img_input', 'Image Input', 1, default_value=('circle.pic',), string_type=hou.stringParmType.FileReference, default_expression=('chs("trace1/file")',), default_expression_language=(hou.scriptLanguage.Hscript,))
+pg.append(temp1)
+sub.setParmTemplateGroup(pg)
+hda = sub.createDigitalAsset(name='defifi', description='defifi', hda_file_name='/home/rapa/definition_test.hda', create_backup=False)
+
+
+
+--------------------------------
+
+
+
+def __set_hda_options(hda=None):
+        definition = hda.type().definition()
+        if definition is None:
+            hda.destroy()
+            hou.hda.uninstallFile('Embedded')
+            return False
+        hda_filepath = definition.libraryFilePath()
+        options = definition.options()
+        options.setUnlockNewInstances(True)
+        options.setSaveSpareParms(True)
+        options.setSaveInitialParmsAndContents(True)
+        definition.setOptions(options)
+        definition.save(hda_filepath, template_node=hda, options=options, create_backup=False)
+        definition.updateFromNode(hda)
+        hda.destroy()
+        hou.hda.uninstallFile(hda_filepath)
+        hou.hda.uninstallFile('Embedded')
+        return True
+
+
+
+
+
+
+------------------------------
+shift + c = 서브넷 만들기! 
+
+>>> sub = hou.node('/obj/STREET_GRID/subnet1')
+>>> pg = sub.parmTemplateGroup()
+>>> temp1 = hou.StringParmTemplate('img_input', 'Image Input', 1, default_value=('circle.pic',), string_type=hou.stringParmType.FileReference, default_expression=('chs("trace1/file")',), default_expression_language=(hou.scriptLanguage.Hscript,))
+>>> pg.append(temp1)
+>>> sub.setParmTemplateGroup(pg)
+>>> 
+>>> 
+>>> hda
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+NameError: name 'hda' is not defined
+>>> 
+>>> 
+>>> hda = sub.createDigitalAsset(name='jeonghyeon', description='jeongfhyeon', hda_file_name='/home/rapa/pjh.hda', create_backup=False)
+>>> 
+>>> definition = hda.type().definition()
+>>> definition
+<hou.HDADefinition of Sop hohjohoho in /home/rapa/zzzz.hda>
+>>> 
+>>> definition.current()
+<console>:1: DeprecationWarning: current is deprecated. Use hou.HDADefinition.isCurrent instead.
+True
+>>> 
+>>> definition.description()
+'hahahaha'
+>>> 
+>>> hda_fpath = definition.libraryFilePath()
+>>> 
+>>> hda_fpath
+'/home/rapa/zzzz.hda'
+>>> 
+>>> options = definition.options()
+>>> options
+<hou.HDAOptions>
+>>> 
+>>> options.saveSpareParms()
+False
+>>> 
+>>> 
+>>> options.setSaveSpareParms(True)
+>>> 
+>>> options.setSaveInitialParmsAndContents(True)
+>>> 
+>>> definition.setOptions(options)
+>>> 
+>>> definition.save(hda_filepath, template_node=hda, options=options, create_backup=False)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+NameError: name 'hda_filepath' is not defined
+>>> 
+>>> definition.save(hda_fpath, template_node=hda, options=options, create_backup=False)
+>>> 
+>>> definition.updateFromNode(hda)
+
+-----------------------------------------------
+
+>>> definition을 hda 만든애로 주기 !! 
+
+>>> definition.parmTemplateGroup()
+<hou.ParmTemplateGroup>
+>>> 
+>>> pg = definition.parmTemplateGroup()
+>>> 
+>>> pg
+<hou.ParmTemplateGroup>
+>>> 
+>>> 
+>>> dir(pgd)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+NameError: name 'pgd' is not defined
+>>> 
+>>> dir(pg)
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', 
+'__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__redu
+ce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__swig_destroy__', '
+__weakref__', 'addParmTemplate', 'append', 'appendToFolder', 'asCode', 'asDialogScript', 'clear', 'containingFolder',
+ 'containingFolderIndices', 'entries', 'entriesWithoutFolders', 'entryAtIndices', 'find', 'findFolder', 'findIndices'
+, 'findIndicesForFolder', 'hide', 'hideFolder', 'insertAfter', 'insertBefore', 'isFolderHidden', 'isHidden', 'label',
+ 'name', 'parmTemplates', 'remove', 'replace', 'setLabel', 'setName', 'setToDialogScript', 'sourceNode', 'sourceNodeT
+ype', 'this', 'thisown']
+>>> 
+>>> pg.parmTemplates()
+()
+>>> 
+>>> 
+>>> temp1
+<hou.StringParmTemplate name='img_input' label='Image Input' length=1 naming_scheme=Base1 string_type=FileReference f
+ile_type=Any default_value=('circle.pic',) default_expression=('chs("trace1/file")',) default_expression_language=(ho
+u.scriptLanguage.Hscript,) tags={}>
+>>> 
+>>> 
+>>> 
+>>> pg.append(temp1)
+>>> 
+>>> pgd
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+NameError: name 'pgd' is not defined
+>>> 
+>>> pg
+<hou.ParmTemplateGroup>
+>>> 
+>>> pg.parmTemplate()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'ParmTemplateGroup' object has no attribute 'parmTemplate'
+>>> pg.parmTemplates()
+(<hou.StringParmTemplate name='img_input' label='Image Input' length=1 naming_scheme=Base1 string_type=FileReference 
+file_type=Any default_value=('circle.pic',) default_expression=('chs("trace1/file")',) default_expression_language=(h
+ou.scriptLanguage.Hscript,) tags={}>,)
+>>> 
+>>> definition.setParmTemplateGroup(pg)
+>>> 
+>>> 
+>>> 
+>>> options = definition.options()
+>>> 
+>>> options.saveSpareParms()
+False
+>>> 
+>>> options.setSaveSpareParms(True)
+>>> options.setSaveInitialParmsAndContents(True)
+>>> definition.setOptions(options)
+>>> definition.save(hda_fpath, template_node=hda, options=options, create_backup=False)
+>>> 
+>>> definition.updateFromNode(hda)
+>>> 
+>>> 
+
+--------------------------------------------------------------
+
+
+subnet = hou.node('/obj/street_grid/subnet1')
+>>> hda = subnet.createDigitalAsset(name='sasa', description='sasa', hda_file_name='/home/rapa/git_workspace/usd_IO/build_data/grayscale_testcity/sa.hda', create_backup=False)
+>>> definition = hda.type().definition()
+>>> pg = definition.parmTemplateGroup()
+>>> temp1 = hou.StringParmTemplate('img_input', 'Image Input', 1, default_value=('circle.pic',), string_type=hou.stringParmType.FileReference, default_expression=('chs("trace1/file")',), default_expression_language=(hou.scriptLanguage.Hscript,))
+>>> pg.append(temp1)
+>>> definition.setParmTemplateGroup(pg)
+>>> options = definition.options()
+>>> options.saveSpareParms()
+False
+>>> options.setSaveSpareParms(True)
+>>> options.setSaveInitialParmsAndContents(True)
+>>> definition.setOptions(options)
+>>> hda_fpath = definition.libraryFilePath()
+>>> definition.save(hda_fpath, template_node=hda, options=options, create_backup=False)
+>>> definition.updateFromNode(hda)
+
+
+---------------------------------------------------------------
+
+template1 = hou.FloatParmTemplate(name='sx', label='Scale', num_components=2)
+template2 = hou.FloatParmTemplate(name='t', label='Sphere_Center', num_components=3
+template3 = hou.FloatParmTemplate(name='blendwidth', label='Blend_Width', num_components=1)
+template4 = hou.StringParmTemplate(name='file', label='Image_input', num_components=1)
+
+
+
+
+
+----------------------------------------------------
+
+
+>>> n_subnet = hou.node('/obj/STREET_GRID/subnet1')
+>>> hda_grid = n_subnet.createDigitalAsset(name='sasa', description='sasa', hda_file_name='/home/rapa/git_workspace/usd_IO/build_data/grayscale_testcity/sa.hda', create_backup=False)
+>>> definition = hda_grid.type().definition()
+>>> pg = definition.parmTemplateGroup()
+>>> template1 = hou.FloatParmTemplate(name='sx', label='Scale', num_components=2)
+>>> template2 = hou.FloatParmTemplate(name='t', label='Sphere_Center', num_components=3)
+>>> template3 = hou.FloatParmTemplate(name='blendwidth', label='Blend_Width', num_components=1)
+>>> 
+
+
+
+... ... ... ...                                            default_expression_language=(hou.scriptLanguage.Hscript,))
+>>> pg.append(template1)
+>>> pg.append(template2)
+>>> pg.append(template3)
+>>> pg.append(template4)
+>>> definition.setParmTemplateGroup(pg)
+>>> options = definition.options()
+>>> options.saveSpareParms()
+False
+>>> options.setSaveSpareParms(True)
+>>> options.setSaveInitialParmsAndContents(True)
+>>> definition.setOptions(options)
+>>> hda_fpath = definition.libraryFilePath()
+>>> definition.save(hda_fpath, template_node=hda_grid, options=options, create_backup=False)
+>>> definition.updateFromNode(hda_grid)
+
