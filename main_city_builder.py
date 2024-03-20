@@ -4,10 +4,13 @@ import sys
 import os
 import importlib
 
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets, QtGui
 
-sys.path.append("D:/git_workspace/city_builder")
+# sys.path.append("D:/git_workspace/city_builder")
 # sys.path.append("/")
+
+filepath = os.getcwd()
+sys.path.append(f"{filepath}/city_builder")
 
 # from main.resource.ui.sample_window4_ui import Ui_MainWindow
 from resource.ui.qt_city_builder_ui import Ui_MainWindow
@@ -16,7 +19,7 @@ from libs.api_grayscale import GrayScaleCity
 import libs.api_mov
 
 # importlib.reload(Ui_MainWindow)
-# import qdarktheme
+import qdarktheme
 
 
 '''
@@ -50,17 +53,21 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.__form = {'hip': '', 'tex': '', 'mov': '', 'usd': ''}
         self.__save_path_lst = list()
         self.__render_img_path = dict()
-        self.__task_type = ''
-        self.__cityname = ''
+        self.city_dpath: str = ''
+        self.__task_type: str = ''
+        self.__cityname: str = ''
+        self.__render_fin = False
         self.build_grayscale = GrayScaleCity()
         self.build_osm = OSMCity()
 
 
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setBaseSize(1000, 1000)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setFixedSize(1800, 1000)
         self.__init()
-        self.resize(1000, 1000)
         self.setupUi(self)
+        qdarktheme.setup_theme()
+        self.setAcceptDrops(True)
+        self._ttest_set_image_to_label()
         self.__connection()
 
     @property
@@ -95,16 +102,22 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.frame__img2.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.frame__img3.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.frame__img4.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.groupBox__image.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.groupBox__image.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img1.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img2.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img3.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img4.customContextMenuRequested.connect(self.showContextMenu)
 
+        # pos 매개 변수로 인덱스값을 구하는거 list
+        # 현재 위치 마우스위에 있는거 label 뭔지 알 수 있는 애가 있음 그걸로 마우스 인식하도록 만들기
+
 
         # self.frame__img2.rightclicked.connect(lambda x: self.__slot_image_Rclick("mov 경로"))
-        # self.
 
     # def mousePressEvent(self, event):
+    #     clk_obj = self.sender()
+    #     print(clk_obj)
     #     print(type(event))
     #     if event.type() == QtCore.QEvent.MouseButtonPress:
     #         if event.button() == QtCore.Qt.RightButton:
@@ -113,17 +126,19 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
     #         else:
     #             print('image frame 외의 공간에서 클릭..?')
 
-    def showContextMenu(self, pos):
+    def showContextMenu(self, pos: QtCore.QPoint):
         # 현재 우클릭한 레이블을 확인
+        print(pos)
         frame_data = self.sender()
         frame_data: QtWidgets.QFrame
         index = self.frame__img1.sender()
         print(frame_data, type(frame_data))
-        print(frame_data.objectName())
-        print(index, type(index), 'asdfsafdjk')
+        # print(frame_data.objectName())
+        # print(index, type(index), 'asdfsafdjk')
 
         # 서브 메뉴 생성
         context_menu = QtWidgets.QMenu(self)
+
         # context_menu.popup(frame_data.metaObject())
         # context_menu.popup(pos)
         a1 = context_menu.addAction('OverView City MOV')
@@ -137,7 +152,8 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         # cursor_pos = self.mapTo(label, pos)
         # print(pos, type(pos))
         # context_menu.exec_(cursor_pos)
-        action = context_menu.exec_(self.mapToGlobal(pos))
+        print(QtGui.QCursor.pos(self))
+        action = context_menu.exec_(self.mapToGlobal(QtGui.QCursor.pos))
 
 
     # WHEN Right click on the label
@@ -168,21 +184,6 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
         print("\n City build start ! 본격 후디니 작업!")
 
-        # osm data일 경우
-        if self.__task_type == "osm_path":
-            print("osm 데이터 기반 city build를 시작합니다 ... ")
-            self.textEdit__log.setText("hip 파일 init 프레임설정")
-            self.build_osm.set_hipfile()
-
-            self.textEdit__log.setText("")
-            self.build_osm.create_city()
-
-            self.textEdit__log.setText("hip 파일 저장")
-            self.build_osm.save_hip(self.__form['hip'])
-
-            self.textEdit__log.setText("Rendering 시작합니다!")
-            self.build_osm.render_seq()
-            self.set_img_path()
 
         # grayscale grid일 경우
         if self.__task_type == "grid_path":
@@ -198,8 +199,28 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.textEdit__log.setText("Rendering 시작합니다!")
             self.build_grayscale.render_seq(self.__form['hip'])
-            self.set_img_path()
+            # 렌더된 이미지 label에 넣어주기 + mov play 준비
+            # self.set_img_path()
+            # self.__render_fin = True
+            self.set_image_to_label()
 
+        # osm data일 경우
+        if self.__task_type == "osm_path":
+            print("osm 데이터 기반 city build를 시작합니다 ... ")
+            self.textEdit__log.setText("hip 파일 init 프레임설정")
+            self.build_osm.set_hipfile()
+
+            self.textEdit__log.setText("")
+            self.build_osm.create_city()
+
+            self.textEdit__log.setText("hip 파일 저장")
+            self.build_osm.save_hip(self.__form['hip'])
+
+            self.textEdit__log.setText("Rendering 시작합니다!")
+            self.build_osm.render_seq()
+            # 렌더된 이미지 label에 넣어주기 + mov play 준비
+            # self.set_img_path()
+            # self.__render_fin = True
 
 
     def __slot_image_Rclick(self, mov_path):
@@ -221,14 +242,14 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
     # output 받기 위한 directory 트리구조 제작
     # [base path] / [city name] / [jpg, mov, hip, usd]
     def mk_dir(self):
-        city_dpath = f'{self.__save_path}/{self.__task_type}_{self.__cityname}'
-        self.lineEdit__open.setText(city_dpath)
+        self.city_dpath = os.path.join(self.__save_path, self.__task_type, self.__cityname)
+        self.lineEdit__open.setText(self.city_dpath)
         try:
-            os.makedirs(city_dpath)
+            os.makedirs(self.city_dpath)
             for form in self.__form.keys():
-                fpath = f'{city_dpath}/{form}'
+                fpath = os.path.join(self.city_dpath, form)
                 if form == 'hip':
-                    fpath = city_dpath
+                    fpath = self.city_dpath
                 self.__form[form] = fpath
                 if not os.path.exists(fpath):
                     os.makedirs(fpath)
@@ -251,13 +272,12 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         files = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption='Get File',
-            # filter='.jpg',
+            filter='*.jpg',
             dir='~/'
         )
         print(lineedit_type)
         if lineedit_type == '':
             self.textEdit__log.setText("이미지 파일을 넣어주세요!")
-            return
 
         if lineedit_type == 'grid_path':
             self.__img_source_path = files[0]
@@ -275,24 +295,78 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lineEdit__city_name.setEnabled(True)
         self.pushButton__build.setEnabled(True)
 
-    def set_img_path(self, img_cnt: int =4):
-        for cnt in range(img_cnt):
-            img_version = 'img'+str(cnt+1)
-            self.__render_img_path[img_version] = r"D:\git_workspace\usd_IO\build_data\grid_path_t1106\render"
+    def set_img_path(self, task, wedge_num: int = 4):
+        for wedge in range(wedge_num):
+            render_img_name = f"{task}_{self.__cityname}_render.{wedge}.1001.jpg"
+            # render_dpath = f"{self.__form['hip']}\
+            render_img_path = os.path.join(self.__form['hip'], 'render', str(wedge), render_img_name)
+
+            self.__render_img_path[wedge] = render_img_path
+
+            # print(render_img_path)
+            # render_qimg = QtGui.QPixmap(render_img_path)
+            # self.__render_img_path[wedge] = render_qimg
+
+    def _ttest_set_image_to_label(self, task="grayscale", wedge_num: int = 4):
+        for wedge in range(wedge_num):
+            render_img_name = f"{task}_t0750_render.{wedge}.1001.jpg"
+            # render_dpath = f"{self.__form['hip']}\
+            render_img_path = os.path.join(r"E:\git_workspace\city_builder\build_data\grid_path\t1645", 'render', str(wedge), render_img_name)
+
+            self.__render_img_path[wedge] = render_img_path
+
+            print(render_img_path)
+            render_qimg = QtGui.QPixmap(render_img_path)
+            self.__render_img_path[wedge] = render_qimg
+
+            if wedge == 0:
+                self.label__img1.setPixmap(self.__render_img_path[wedge])
+                self.label__img1.setAlignment(QtCore.Qt.AlignCenter)
+            if wedge == 1:
+                self.label__img2.setPixmap(self.__render_img_path[wedge])
+                self.label__img2.setAlignment(QtCore.Qt.AlignCenter)
+            if wedge == 2:
+                self.label__img3.setPixmap(self.__render_img_path[wedge])
+                self.label__img3.setAlignment(QtCore.Qt.AlignCenter)
+            if wedge == 3:
+                self.label__img4.setPixmap(self.__render_img_path[wedge])
+                self.label__img4.setAlignment(QtCore.Qt.AlignCenter)
+
         print(self.__render_img_path)
 
-    def slot_set_image_to_label(self, img_cnt: int = 4):
-        print('일단 set text 로 구현해두고 render 성공하면 이미지 넣는걸로!')
+    def set_image_to_label(self, img_cnt: int = 4):
+        print('일단 set text로 구현해두고 render 성공하면 이미지 넣는걸로!')
+        if self.__task_type == "grid_path":
+            self.set_img_path("grayscale")
+            print(self.__render_img_path)
+
+
+        if self.__task_type == "osm_path":
+            self.set_img_path("osm")
+            print(self.__render_img_path)
+
         for cnt in range(img_cnt):
-            img_version = 'img'+str(cnt+1)
+            # self.label_lst[cnt].setPixmap(self.__render_img_path[])
             self.label__img1.setText(self.set_img_path[img_version])
 
+            # render_qimg = QtGui.QPixmap(render_img_path)
+            # self.__render_img_path[wedge] = render_qimg
 
     # drag and drop 구현
     def slot_drag_drop(self):
         pass
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
 
+    def dropEvent(self, event):
+        urls = event.mimeData().urls()
+        if urls:
+            file_path = urls[0].toLocalFile()
+            self.file_path_label.setText(file_path)
 
 
 if __name__ == '__main__':

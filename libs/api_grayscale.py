@@ -16,6 +16,10 @@ class GrayScaleCity:
         assert isinstance(val, str)
         self.__cityname = val
 
+    @staticmethod
+    def align_node(node_lst):
+        for node in node_lst:
+            node.moveToGoodPosition()
 
     @staticmethod       # 노드 생성 시 위치 정렬을 위한 메서드
     def align_node_pos(node_name, node_pos, add_x, add_y):
@@ -152,9 +156,10 @@ class GrayScaleCity:
         print("\n렌더 시작!!")
 
         # Mantra render set >> framerange
-        n_mantra.parm("framegeneration").set(1)
-        n_topnet.cookAllOutputWorkItems(True)
+        # n_mantra.parm("framegeneration").set(1)
+        # n_topnet.cookAllOutputWorkItems(True)
         print("\n cook 했다면 seq 뽑을 수 있음!")
+
 
 
     def save_hip(self,
@@ -208,9 +213,8 @@ class GrayScaleCity:
         n_trace = n_subnet.createNode("trace")
 
         n_trace.parm("rx").set(-90)
-        n_trace.parm("sx").set(100)
-        trace_sx = n_trace.parm("sx")
-        n_trace.parm("sy").set(trace_sx)
+        n_trace.parm("sx").set(1)
+        n_trace.parm("sy").setExpression('ch("./sx")')
 
         # n_trace.parm("file").set("/home/rapa/git_workspace/usd_IO/hip_practice/script_grayscale/tex/citygrid.jpg") # grid 이미지 경로 설정
         print(img_path, type(img_path))
@@ -224,19 +228,83 @@ class GrayScaleCity:
         n_reverse.setInput(0, n_trace)
         self.align_node_pos(n_reverse, n_trace.position(), 0, -1)
 
+
+        n_root = n_subnet.createNode("null", "root")
+        n_root.setInput(0, n_reverse)
+        self.align_node_pos(n_root, n_trace.position(), 0, -1)
+
+
+        # vex를 사용하여 그리드 각각 사이즈의 평균을 구해 어떤 grid가 오든 유사한 사이즈의 그리드가 생성될 수 있도록 함.
+        # root 노드 옆에 새로운 길 팜.
+        n_vex = n_subnet.createNode("null", "vex")
+        n_vex.setInput(0, n_root)
+        self.align_node_pos(n_vex, n_root.position(), 3, 0)
+
+
+        n_att_wrangle = n_subnet.createNode("attribwrangle")
+        n_att_wrangle.parm("class").set(0)
+        vex_expression1 = '''int _nprims = nprimitives(0);
+        float _sum = 0;
+        
+        for(int i=0; i<_nprims; i++){
+            _sum += primintrinsic(0, "measuredarea", i);
+        }
+
+        f@_area = 1.0 / (_sum / float(_nprims));
+        '''
+        n_att_wrangle.parm("snippet").set(vex_expression1)
+        n_att_wrangle.parm("class").set(0)
+        n_att_wrangle.setInput(0, n_vex)
+        self.align_node_pos(n_att_wrangle, n_vex.position(), 0, -1)
+
+
+        n_ref_area = n_subnet.createNode("null", "__REF_AREA__")
+        n_ref_area.setInput(0, n_att_wrangle)
+        self.align_node_pos(n_ref_area, n_att_wrangle.position(), 0, -1)
+
+        ##############################################################################
         n_resample = n_subnet.createNode("resample")
-        n_resample.setInput(0, n_reverse)
-        self.align_node_pos(n_resample, n_reverse.position(), 0, -1)
+        # todo >> render 시간 오래 걸리는 이유를 vertex 많아서 일 수 있다고 하셔서 resample 넣어줌
+        # n_resample.parm("length").set(3)
+        n_resample.setInput(0, n_root)
+        self.align_node_pos(n_resample, n_root.position(), 0, -1)
+
+        n_att_wrangle2 = n_subnet.createNode("attribwrangle")
+        vex_expression2 = """for(int i=0; i<npoints(0); i++){
+            int _neighbours[] = neighbours(0, i);
+            vector _pos1 = point(0, "P", _neighbours[0]);
+            vector _pos2 = point(0, "P", _neighbours[1]);
+            vector _p = point(0, "P", i);
+            vector _dir1 = _pos1 - _p;
+            vector _dir2 = _pos2 - _p;
+            _dir1 = normalize(_dir1);
+            _dir2 = normalize(_dir2);
+            float _angle = abs(dot(_dir1, _dir2));
+            if(_angle > 0.99){
+                removepoint(geoself(), i);
+            }
+        }    
+        """
+        n_att_wrangle2.parm("snippet").set(vex_expression2)
+        n_att_wrangle2.parm("class").set(0)
+        n_att_wrangle2.setInput(0, n_resample)
+        self.align_node_pos(n_att_wrangle2, n_resample.position(), 0 ,-1)
+
+
+        n_transform = n_subnet.createNode("xform")
+        n_transform.parm("scale").setExpression('detail("../__REF_AREA__", "_area", 0)')
+        n_transform.setInput(0, n_att_wrangle2)
+        self.align_node_pos(n_transform, n_att_wrangle2.position(), 0, -1)
 
 
         n_color = n_subnet.createNode("color")
-        n_color.setInput(0, n_resample)
         # n_color.setColor(hou.Color(0,0,0))
         n_color.parm("colorr").set(0)
         n_color.parm("colorg").set(0)
         n_color.parm("colorb").set(0)
         n_color.parm("class").set(1)
-        self.align_node_pos(n_color, n_resample.position(), 0, -1)
+        n_color.setInput(0, n_transform)
+        self.align_node_pos(n_color, n_transform.position(), 0, -1)
 
 
         # city core 제작 위함 = 초록색으로 표시 후 해당 부분을 추출하여 height를 높여주는 원리
@@ -271,6 +339,7 @@ class GrayScaleCity:
         n_output.setInput(0, n_attribute_transfer)
         n_output.setDisplayFlag(True)
         self.align_node_pos(n_output, n_attribute_transfer.position(), 0, -1)
+        self.align_node([n_trace, n_reverse, n_root, n_vex, n_att_wrangle, n_ref_area, n_resample, n_att_wrangle2, n_transform, n_color, n_sphere, n_sphere_color, n_attribute_transfer, n_output])
 
 
         print("\n hda 제작을 위한 세팅 완료 ")
@@ -436,23 +505,19 @@ class GrayScaleCity:
         n_geometryimport.parm("externalpath").set("$HIP/geo/$HIPNAME.$OS.`@pdg_index`.`@wedgenum`.bgeo.sc")
         n_geometryimport.parm("class").set(2)
         n_geometryimport.setInput(0, n_hdaprocessor)
-        self.align_node_pos(n_geometryimport, n_hdaprocessor.position(), 0, -1)
+        self.align_node_pos(n_geometryimport, n_hdaprocessor.position(), -2, -1)
 
 
         # obj > topnet > attributecreate1 = attr_core
         n_att_create1 = n_topnet.createNode("attributecreate", "attributecreate_core")
         n_att_create1.parm("pdg_workitemgeneration").set(0)
         n_att_create1.parm("floatattribs").set(2)
-
-
-
-
         n_att_create1.parm("floatname1").set("base_height")
         n_att_create1.parm("floatvalue11").set(10)
         n_att_create1.parm("floatname2").set("height_variation")
         n_att_create1.parm("floatvalue21").setExpression("rand(@pdg_index*@seed_wedge)*15 + @Cd.g*30")
         n_att_create1.setInput(0, n_geometryimport)
-        self.align_node_pos(n_att_create1, n_geometryimport.position(), 0, -1)
+        self.align_node_pos(n_att_create1, n_geometryimport.position(), 4, -1)
 
 
         # obj > topnet > attributecreate2 = attr_isolate
@@ -465,7 +530,7 @@ class GrayScaleCity:
         n_att_create2.parm("floatvalue11").set(50)
         n_att_create2.parm("floatname2").set("height_variation")
         n_att_create2.setInput(0, n_att_create1)
-        self.align_node_pos(n_att_create2, n_att_create1.position(), 0, -1)
+        self.align_node_pos(n_att_create2, n_att_create1.position(), -4, -1)
 
 
         n_rop_geo = n_topnet.createNode("ropgeometry")
@@ -686,7 +751,7 @@ class GrayScaleCity:
 
 
         print("cook 해주고 work 켜주면 사용자가 건물 확인할 수 있음!")
-        print("근데 지금은 hda 뭔가 이상하게 생성되어서 가장 큰 문제는 grid 이미지와 연결이 안되는 것!! 일단 절대값으로 넣고 진행")
+        print("근데 지금은 hda 뭔가 이상하게 생성되어서 가장 큰 문제는 grid 이미지와 연결이 안되는 것!! 일단 절댓값으로 넣고 진행")
         n_street_grid.setDisplayFlag(False)
         n_work_viewer1.setDisplayFlag(True)
         n_work_viewer2.setDisplayFlag(True)

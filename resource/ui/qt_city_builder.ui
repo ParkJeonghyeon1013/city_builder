@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1598</width>
+    <width>1653</width>
     <height>729</height>
    </rect>
   </property>
@@ -58,7 +58,7 @@
                     <x>0</x>
                     <y>0</y>
                     <width>498</width>
-                    <height>608</height>
+                    <height>579</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_18">
@@ -109,7 +109,7 @@
                          </spacer>
                         </item>
                         <item>
-                         <widget class="QLabel" name="label_18">
+                         <widget class="QLabel" name="label__dd_grayscale">
                           <property name="text">
                            <string>Drag &amp; Drop</string>
                           </property>
@@ -182,7 +182,7 @@
                            </spacer>
                           </item>
                           <item>
-                           <widget class="QLabel" name="label_19">
+                           <widget class="QLabel" name="label__dd_osm">
                             <property name="text">
                              <string>Drag &amp; Drop</string>
                             </property>
@@ -614,8 +614,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>159</width>
-                    <height>176</height>
+                    <width>229</width>
+                    <height>220</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_14">
@@ -1038,8 +1038,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1598</width>
-     <height>22</height>
+     <width>1653</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

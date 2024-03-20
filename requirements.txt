@@ -1,2 +1,2 @@
 qtawesome
-qdarktheme
+pyqtdarktheme
