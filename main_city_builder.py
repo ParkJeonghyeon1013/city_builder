@@ -3,6 +3,7 @@
 import sys
 import os
 import importlib
+import re
 
 from PySide2 import QtCore, QtWidgets, QtGui
 
@@ -61,7 +62,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.build_osm = OSMCity()
 
 
-        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setFixedSize(1800, 1000)
         self.__init()
         self.setupUi(self)
@@ -98,6 +99,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton__build.clicked.connect(self.__slot_btn_build)
         self.pushButton__open.clicked.connect(self.__slot_btn_open)
 
+
         self.frame__img1.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.frame__img2.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.frame__img3.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -109,23 +111,6 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.frame__img3.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img4.customContextMenuRequested.connect(self.showContextMenu)
 
-        # pos 매개 변수로 인덱스값을 구하는거 list
-        # 현재 위치 마우스위에 있는거 label 뭔지 알 수 있는 애가 있음 그걸로 마우스 인식하도록 만들기
-
-
-        # self.frame__img2.rightclicked.connect(lambda x: self.__slot_image_Rclick("mov 경로"))
-
-    # def mousePressEvent(self, event):
-    #     clk_obj = self.sender()
-    #     print(clk_obj)
-    #     print(type(event))
-    #     if event.type() == QtCore.QEvent.MouseButtonPress:
-    #         if event.button() == QtCore.Qt.RightButton:
-    #             print('특정범위에서 우클릭을 잡아네야 하는디...;')
-    #             return
-    #         else:
-    #             print('image frame 외의 공간에서 클릭..?')
-
     def showContextMenu(self, pos: QtCore.QPoint):
         # 현재 우클릭한 레이블을 확인
         print(pos)
@@ -133,14 +118,10 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         frame_data: QtWidgets.QFrame
         index = self.frame__img1.sender()
         print(frame_data, type(frame_data))
-        # print(frame_data.objectName())
-        # print(index, type(index), 'asdfsafdjk')
 
         # 서브 메뉴 생성
         context_menu = QtWidgets.QMenu(self)
 
-        # context_menu.popup(frame_data.metaObject())
-        # context_menu.popup(pos)
         a1 = context_menu.addAction('OverView City MOV')
         a2 = context_menu.addAction('Open Output Folder')
 
@@ -148,27 +129,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         a2.triggered.connect(self.open_folder)
 
         # 서브 메뉴 표시
-        frame_data.mapToGlobal(pos)
-        # cursor_pos = self.mapTo(label, pos)
-        # print(pos, type(pos))
-        # context_menu.exec_(cursor_pos)
-        print(QtGui.QCursor.pos(self))
-        action = context_menu.exec_(self.mapToGlobal(QtGui.QCursor.pos))
-
-
-    # WHEN Right click on the label
-    # then MOV player come up
-    # def contextMenuEvent(self, event):
-    #     # todo : 범위 지정해주기 현재는 어디든 다 적용됨.
-    #     context_menu = QtWidgets.QMenu(self)
-    #
-    #     a1 = context_menu.addAction('OverView City MOV')
-    #     a2 = context_menu.addAction('action 2')
-    #
-    #     a1.triggered.connect(self.overview_player)
-    #     a2.triggered.connect(self.action2_trigger)
-    #
-    #     context_menu.exec_(event.globalPos())
+        context_menu.exec_(frame_data.mapToGlobal(pos))
 
 
     def __slot_btn_open(self):
@@ -303,9 +264,6 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.__render_img_path[wedge] = render_img_path
 
-            # print(render_img_path)
-            # render_qimg = QtGui.QPixmap(render_img_path)
-            # self.__render_img_path[wedge] = render_qimg
 
     def _ttest_set_image_to_label(self, task="grayscale", wedge_num: int = 4):
         for wedge in range(wedge_num):
