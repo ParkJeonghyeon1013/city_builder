@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1636</width>
-    <height>742</height>
+    <width>1653</width>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,9 +34,21 @@
               <attribute name="title">
                <string>New City Setting</string>
               </attribute>
-              <layout class="QGridLayout" name="gridLayout_8">
+              <layout class="QGridLayout" name="gridLayout_7">
                <item row="0" column="0">
                 <widget class="QScrollArea" name="scrollArea">
+                 <property name="minimumSize">
+                  <size>
+                   <width>500</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>500</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="widgetResizable">
                   <bool>true</bool>
                  </property>
@@ -45,118 +57,33 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>295</width>
-                    <height>564</height>
+                    <width>498</width>
+                    <height>579</height>
                    </rect>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_2">
-                   <item row="1" column="0">
-                    <widget class="QGroupBox" name="groupBox_5">
-                     <property name="statusTip">
-                      <string notr="true"/>
-                     </property>
-                     <property name="title">
-                      <string notr="true"/>
-                     </property>
-                     <property name="checkable">
-                      <bool>false</bool>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_19">
-                      <item row="1" column="0">
-                       <widget class="QLabel" name="label_6">
-                        <property name="text">
-                         <string>TextLabel</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="0">
-                       <widget class="QGroupBox" name="groupBox_6">
-                        <property name="title">
-                         <string/>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_14">
-                         <item row="0" column="1">
-                          <widget class="QLabel" name="label_10">
-                           <property name="text">
-                            <string>City Setting</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QPushButton" name="pushButton_3">
-                           <property name="text">
-                            <string>.</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="2">
-                          <spacer name="horizontalSpacer_2">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QGroupBox" name="groupBox_4">
-                     <property name="title">
-                      <string>Building Setting</string>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_18">
-                      <item row="0" column="0">
-                       <widget class="QColumnView" name="columnView_2"/>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QGroupBox" name="groupBox_8">
-                     <property name="title">
-                      <string>Weather FX</string>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_17">
-                      <item row="0" column="0">
-                       <widget class="QColumnView" name="columnView"/>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
+                  <layout class="QGridLayout" name="gridLayout_18">
                    <item row="0" column="0">
-                    <widget class="QFrame" name="frame__drag_drop">
-                     <property name="frameShape">
-                      <enum>QFrame::StyledPanel</enum>
+                    <widget class="QGroupBox" name="groupBox__grayscale">
+                     <property name="title">
+                      <string>GrayScale</string>
                      </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Raised</enum>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_7">
+                     <layout class="QGridLayout" name="gridLayout_2">
                       <item row="0" column="0">
                        <layout class="QVBoxLayout" name="verticalLayout_2">
                         <item>
+                         <widget class="QLabel" name="label__grid">
+                          <property name="text">
+                           <string>Main Grid source</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
                          <layout class="QHBoxLayout" name="horizontalLayout_2">
                           <item>
-                           <widget class="QLabel" name="label_5">
-                            <property name="text">
-                             <string>Main Grid source</string>
-                            </property>
-                           </widget>
+                           <widget class="QLineEdit" name="lineEdit__grid"/>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="lineEdit__grid_path"/>
-                          </item>
-                          <item>
-                           <widget class="QToolButton" name="toolButton__gird_path">
+                           <widget class="QToolButton" name="toolButton__grid">
                             <property name="text">
                              <string>...</string>
                             </property>
@@ -164,41 +91,156 @@
                           </item>
                          </layout>
                         </item>
+                       </layout>
+                      </item>
+                      <item row="1" column="0">
+                       <layout class="QHBoxLayout" name="horizontalLayout__dragdrop">
                         <item>
-                         <widget class="QFrame" name="frame__drag_drop_2">
-                          <property name="frameShape">
-                           <enum>QFrame::StyledPanel</enum>
+                         <spacer name="verticalSpacer_7">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
                           </property>
-                          <property name="frameShadow">
-                           <enum>QFrame::Raised</enum>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
                           </property>
-                          <layout class="QGridLayout" name="gridLayout_16">
-                           <item row="0" column="0">
-                            <widget class="QLabel" name="label__drag_drop">
-                             <property name="text">
-                              <string>Drag &amp; Drop</string>
-                             </property>
-                             <property name="alignment">
-                              <set>Qt::AlignCenter</set>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                         </spacer>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="label__dd_grayscale">
+                          <property name="text">
+                           <string>Drag &amp; Drop</string>
+                          </property>
                          </widget>
+                        </item>
+                        <item>
+                         <spacer name="verticalSpacer_6">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
                       </item>
                      </layout>
                     </widget>
                    </item>
-                   <item row="5" column="0">
-                    <widget class="QGroupBox" name="groupBox_7">
+                   <item row="1" column="0">
+                    <widget class="QGroupBox" name="groupBox__osm">
                      <property name="title">
-                      <string>Weather FX</string>
+                      <string>OSM</string>
                      </property>
-                     <layout class="QGridLayout" name="gridLayout_20">
+                     <layout class="QGridLayout" name="gridLayout_16">
                       <item row="0" column="0">
-                       <widget class="QColumnView" name="columnView_3"/>
+                       <layout class="QVBoxLayout" name="verticalLayout_6">
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_5">
+                          <item>
+                           <widget class="QLabel" name="label__osm">
+                            <property name="text">
+                             <string>Main OSM source</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <layout class="QHBoxLayout" name="horizontalLayout__osm">
+                            <item>
+                             <widget class="QLineEdit" name="lineEdit__osm"/>
+                            </item>
+                            <item>
+                             <widget class="QToolButton" name="toolButton__osm">
+                              <property name="text">
+                               <string>...</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout__osm_2">
+                          <item>
+                           <spacer name="verticalSpacer_9">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="label__dd_osm">
+                            <property name="text">
+                             <string>Drag &amp; Drop</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="verticalSpacer_8">
+                            <property name="orientation">
+                             <enum>Qt::Vertical</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>20</width>
+                              <height>40</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QGroupBox" name="groupBox__name">
+                     <property name="title">
+                      <string>Build</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_17">
+                      <item row="0" column="0">
+                       <layout class="QVBoxLayout" name="verticalLayout__name">
+                        <item>
+                         <widget class="QLabel" name="label_2">
+                          <property name="text">
+                           <string>City Name</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="lineEdit__city_name">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="pushButton__build">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                          <property name="text">
+                           <string>Build start</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                      </layout>
                     </widget>
@@ -208,38 +250,37 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QFrame" name="frame_2">
+                <widget class="QFrame" name="frame__image">
+                 <property name="minimumSize">
+                  <size>
+                   <width>832</width>
+                   <height>390</height>
+                  </size>
+                 </property>
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_4">
+                 <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QGroupBox" name="groupBox_3">
+                   <widget class="QGroupBox" name="groupBox__image">
                     <property name="title">
                      <string>Sample Image</string>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_6">
-                     <item row="0" column="1">
-                      <widget class="QFrame" name="frame_5">
+                    <layout class="QGridLayout" name="gridLayout_4">
+                     <item row="0" column="0">
+                      <widget class="QFrame" name="frame__img1">
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
                        <property name="frameShadow">
                         <enum>QFrame::Raised</enum>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_11">
+                       <layout class="QGridLayout" name="gridLayout_9">
                         <item row="0" column="0">
-                         <widget class="QCheckBox" name="checkBox_5">
-                          <property name="text">
-                           <string>Image 1</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="label_13">
+                         <widget class="QLabel" name="label__img1">
                           <property name="baseSize">
                            <size>
                             <width>50</width>
@@ -256,27 +297,33 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="0" column="1">
+                         <spacer name="verticalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
                        </layout>
                       </widget>
                      </item>
-                     <item row="1" column="1">
-                      <widget class="QFrame" name="frame_6">
+                     <item row="0" column="1">
+                      <widget class="QFrame" name="frame__img2">
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
                        <property name="frameShadow">
                         <enum>QFrame::Raised</enum>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_12">
+                       <layout class="QGridLayout" name="gridLayout_11">
                         <item row="0" column="0">
-                         <widget class="QCheckBox" name="checkBox_4">
-                          <property name="text">
-                           <string>Image 1</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="label_12">
+                         <widget class="QLabel" name="label__img2">
                           <property name="baseSize">
                            <size>
                             <width>50</width>
@@ -297,7 +344,7 @@
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QFrame" name="frame_4">
+                      <widget class="QFrame" name="frame__img3">
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
@@ -305,8 +352,8 @@
                         <enum>QFrame::Raised</enum>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_10">
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="label_2">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label__img3">
                           <property name="baseSize">
                            <size>
                             <width>50</width>
@@ -323,14 +370,7 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="0">
-                         <widget class="QCheckBox" name="checkBox_2">
-                          <property name="text">
-                           <string>Image 1</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="1">
+                        <item row="0" column="1">
                          <spacer name="verticalSpacer_2">
                           <property name="orientation">
                            <enum>Qt::Vertical</enum>
@@ -346,17 +386,17 @@
                        </layout>
                       </widget>
                      </item>
-                     <item row="0" column="0">
-                      <widget class="QFrame" name="frame_3">
+                     <item row="1" column="1">
+                      <widget class="QFrame" name="frame__img4">
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
                        <property name="frameShadow">
                         <enum>QFrame::Raised</enum>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_9">
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="label">
+                       <layout class="QGridLayout" name="gridLayout_12">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label__img4">
                           <property name="baseSize">
                            <size>
                             <width>50</width>
@@ -373,28 +413,125 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="0">
-                         <widget class="QCheckBox" name="checkBox">
-                          <property name="text">
-                           <string>Image 1</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="1">
-                         <spacer name="verticalSpacer">
-                          <property name="orientation">
-                           <enum>Qt::Vertical</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>20</width>
-                            <height>40</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
                        </layout>
                       </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QGroupBox" name="groupBox_10">
+                    <property name="minimumSize">
+                     <size>
+                      <width>832</width>
+                      <height>110</height>
+                     </size>
+                    </property>
+                    <property name="title">
+                     <string/>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_8">
+                     <item row="0" column="0" rowspan="2">
+                      <layout class="QVBoxLayout" name="verticalLayout_7">
+                       <item>
+                        <widget class="QProgressBar" name="progressBar__build">
+                         <property name="value">
+                          <number>0</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QTextEdit" name="textEdit__log">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>450</width>
+                           <height>60</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>450</width>
+                           <height>61</height>
+                          </size>
+                         </property>
+                         <property name="readOnly">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="0" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout__open">
+                       <item>
+                        <widget class="QLabel" name="label_7">
+                         <property name="text">
+                          <string>Save Location</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="lineEdit__open">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="readOnly">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QToolButton" name="toolButton__open">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>...</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton__open">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Open Folder</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="1" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout__publish">
+                       <item>
+                        <widget class="QLabel" name="label__publish">
+                         <property name="text">
+                          <string>csv data로 username</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox__usr">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton__publish">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Publish Shotgrid</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
@@ -402,90 +539,9 @@
                  </layout>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QGroupBox" name="groupBox">
-                 <property name="title">
-                  <string/>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_24">
-                  <item row="0" column="0">
-                   <widget class="QProgressBar" name="progressBar">
-                    <property name="value">
-                     <number>0</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="pushButton">
-                    <property name="text">
-                     <string>Build start</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QGroupBox" name="groupBox_10">
-                 <property name="title">
-                  <string/>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_23">
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_3">
-                    <item>
-                     <widget class="QLabel" name="label_7">
-                      <property name="text">
-                       <string>Save Location</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="lineEdit_3"/>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="toolButton_2">
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pushButton_2">
-                      <property name="text">
-                       <string>Export Local</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_6">
-                    <item>
-                     <widget class="QLabel" name="label_11">
-                      <property name="text">
-                       <string>csv data로 username</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="comboBox"/>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pushButton_6">
-                      <property name="text">
-                       <string>Publish Shotgrid</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab2">
+             <widget class="QWidget" name="tab2__variation">
               <attribute name="title">
                <string>Exist City Variation</string>
               </attribute>
@@ -558,11 +614,11 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>309</width>
-                    <height>514</height>
+                    <width>229</width>
+                    <height>220</height>
                    </rect>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_34">
+                  <layout class="QGridLayout" name="gridLayout_14">
                    <item row="0" column="0">
                     <layout class="QVBoxLayout" name="verticalLayout_4">
                      <item>
@@ -661,17 +717,18 @@
                        </property>
                        <layout class="QGridLayout" name="gridLayout_31">
                         <item row="0" column="0">
-                         <spacer name="verticalSpacer_5">
-                          <property name="orientation">
-                           <enum>Qt::Vertical</enum>
+                         <widget class="QLabel" name="label_6">
+                          <property name="text">
+                           <string>weather FX</string>
                           </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>20</width>
-                            <height>324</height>
-                           </size>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_10">
+                          <property name="text">
+                           <string>building setting</string>
                           </property>
-                         </spacer>
+                         </widget>
                         </item>
                        </layout>
                       </widget>
@@ -902,11 +959,6 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab">
-              <attribute name="title">
-               <string>OSM Setting</string>
-              </attribute>
-             </widget>
             </widget>
            </item>
            <item row="0" column="0">
@@ -935,6 +987,9 @@
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
+               <widget class="QTreeView" name="treeView"/>
+              </item>
+              <item row="0" column="1">
                <widget class="QTreeWidget" name="treeWidget">
                 <property name="columnCount">
                  <number>5</number>
@@ -966,16 +1021,6 @@
                 </column>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLineEdit" name="lineEdit">
-                <property name="baseSize">
-                 <size>
-                  <width>50</width>
-                  <height>50</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -993,8 +1038,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1636</width>
-     <height>20</height>
+     <width>1653</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
