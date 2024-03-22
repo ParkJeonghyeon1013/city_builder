@@ -3,6 +3,9 @@ import sys, os
 import re, importlib, subprocess
 import hou as hou
 
+
+
+
 class GrayScaleCity:
     def __init__(self, cityname: str = 'testcity'):
         self.version = 0
@@ -108,6 +111,14 @@ class GrayScaleCity:
         n_mantra.parm("pdg_cachemode").set(2)
         n_mantra.parm("override_camerares").set(1)
         n_mantra.parm("vm_picture").set("$HIP/render/$HIPNAME_$OS_`@wedgenum`/$HIPNAME.`@wedgenum`.$F.jpg")
+
+        # 만트라 세팅 렌더시간 줄일 수 있...지는 못했다ㅠ
+        # a = hou.node('/obj/topnet1/ropmantra1')
+        # >> > a.parm("vm_sssquality").set(0)
+        # >> > a.parm("vm_reflectionquality").set(0)
+        # >> > a.parm("vm_refractionquality").set(0)
+        # >> > a.parm("vm_renderengine").set(0)
+
         self.align_node_pos(n_mantra, n_part_idx.position(), 0, -2)
 
         # obj > topnet > overlaytext
@@ -517,7 +528,7 @@ class GrayScaleCity:
         n_att_create1.parm("floatname2").set("height_variation")
         n_att_create1.parm("floatvalue21").setExpression("rand(@pdg_index*@seed_wedge)*15 + @Cd.g*30")
         n_att_create1.setInput(0, n_geometryimport)
-        self.align_node_pos(n_att_create1, n_geometryimport.position(), 4, -1)
+        self.align_node_pos(n_att_create1, n_geometryimport.position(), 2, -1)
 
 
         # obj > topnet > attributecreate2 = attr_isolate
@@ -540,7 +551,7 @@ class GrayScaleCity:
         n_rop_geo.parm("pdg_cachemode").set(2)
         n_rop_geo.parm("pdg_cooktype").set(3)
         n_rop_geo.setInput(0, n_att_create2)
-        self.align_node_pos(n_rop_geo, n_att_create2.position(), 0, -1)
+        self.align_node_pos(n_rop_geo, n_att_create2.position(), 4, -1)
 
 #########################################################################################################################
         # obj > topnet > ropgeometry = create_building
@@ -629,6 +640,7 @@ class GrayScaleCity:
         self.align_node_pos(n_color, n_extrude7.position(), 0, -1)
 
         n_out.setInput(0, n_color)
+        n_out.setDisplayFlag(True)
 
 ##########################################################################################################################
         # obj > topnet > partitionbyatrribute
@@ -637,14 +649,14 @@ class GrayScaleCity:
         n_part_att.parm("attributes").set(1)
         n_part_att.parm("name1").set("wedgenum")
         n_part_att.setInput(0, n_rop_geo)
-        self.align_node_pos(n_part_att, n_rop_geo.position(), 0, -1)
+        self.align_node_pos(n_part_att, n_rop_geo.position(), -4, -1)
 
         # obj > topnet > geometryimport
         n_rop_geo2 = n_topnet.createNode("geometryimport", "building_merge")
         n_rop_geo2.parm("mergeinput").set(1)
         n_rop_geo2.parm("externalpath").set("$HIP/geo/$HIPNAME.$OS.`@pdg_index`.`@wedgenum`.bgeo.sc")
         n_rop_geo2.setInput(0, n_part_att)
-        self.align_node_pos(n_rop_geo2, n_part_att.position(), 0, -1)
+        self.align_node_pos(n_rop_geo2, n_part_att.position(), 4, -1)
 
         # obj > topnet
         n_rop_import2 = n_topnet.createNode("ropgeometry", "build_streets")
