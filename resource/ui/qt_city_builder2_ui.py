@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'qt_city_builder.ui'
+## Form generated from reading UI file 'qt_city_builder2.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -43,7 +43,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 498, 579))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 498, 602))
         self.gridLayout_18 = QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_18.setObjectName(u"gridLayout_18")
         self.groupBox__grayscale = QGroupBox(self.scrollAreaWidgetContents)
@@ -416,7 +416,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 229, 220))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 181, 185))
         self.gridLayout_14 = QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_14.setObjectName(u"gridLayout_14")
         self.verticalLayout_4 = QVBoxLayout()
@@ -653,33 +653,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.groupBox_9)
 
-        self.frame = QFrame(self.centralwidget)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.gridLayout_3 = QGridLayout(self.frame)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.groupBox_2 = QGroupBox(self.frame)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.gridLayout = QGridLayout(self.groupBox_2)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.treeView = QTreeView(self.groupBox_2)
-        self.treeView.setObjectName(u"treeView")
-
-        self.gridLayout.addWidget(self.treeView, 0, 0, 1, 1)
-
-        self.treeWidget = QTreeWidget(self.groupBox_2)
-        self.treeWidget.setObjectName(u"treeWidget")
-        self.treeWidget.setColumnCount(5)
-
-        self.gridLayout.addWidget(self.treeWidget, 0, 1, 1, 1)
-
-
-        self.gridLayout_3.addWidget(self.groupBox_2, 0, 0, 1, 1)
-
-
-        self.horizontalLayout.addWidget(self.frame)
-
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -689,7 +662,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1653, 26))
+        self.menubar.setGeometry(QRect(0, 0, 1653, 22))
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
@@ -751,12 +724,5 @@ class Ui_MainWindow(object):
         self.pushButton_10.setText(QCoreApplication.translate("MainWindow", u"Build start", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2__variation), QCoreApplication.translate("MainWindow", u"Exist City Variation", None))
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"City Setting", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"USD hieararchy", None))
-        ___qtreewidgetitem = self.treeWidget.headerItem()
-        ___qtreewidgetitem.setText(4, QCoreApplication.translate("MainWindow", u"Draw Mode", None));
-        ___qtreewidgetitem.setText(3, QCoreApplication.translate("MainWindow", u"Kind", None));
-        ___qtreewidgetitem.setText(2, QCoreApplication.translate("MainWindow", u"Variants", None));
-        ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"Primitive Type", None));
-        ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Scene Graph Path", None));
     # retranslateUi
 

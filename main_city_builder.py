@@ -1,31 +1,25 @@
-# -*- coding: utf-8 -*-
+#-*- coding:utf-8 -*-
 
 import sys
 import os
-import importlib
+import subprocess
 import re
 
 from PySide2 import QtCore, QtWidgets, QtGui
 
-# sys.path.append("D:/git_workspace/city_builder")
-# sys.path.append("/")
-
+sys.path.append("D:/git_workspace/city_builder")
 filepath = os.getcwd()
 sys.path.append(f"{filepath}/city_builder")
 
 # from main.resource.ui.sample_window4_ui import Ui_MainWindow
-from resource.ui.qt_city_builder_ui import Ui_MainWindow
+from resource.ui.qt_city_builder2_ui import Ui_MainWindow
 from libs.api_osm import OSMCity
 from libs.api_grayscale import GrayScaleCity
-import libs.api_mov
+from libs.api_mov import FFmpegAPI, VideoPlayer
+from libs.api_shotgrid import SgAPI
 
 # importlib.reload(Ui_MainWindow)
 import qdarktheme
-
-
-'''
-
-'''
 
 class Signals(QtWidgets.QApplication):
     update_progress = QtCore.Signal(int)
@@ -49,27 +43,35 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.__grid_path = ''
         self.__osm_path = ''
         self.__img_source_path = ''
-        self.__save_path = os.path.join(filepath,'build_data')
+        self.__save_path = os.path.join(filepath, 'build_data')
         print(self.__save_path)
         self.__form = {'hip': '', 'tex': '', 'mov': '', 'usd': ''}
         self.__save_path_lst = list()
+        self.__mov_path_lst = list()
+        self.__seq_path_lst = list()
         self.__render_img_path = dict()
         self.city_dpath: str = ''
         self.__task_type: str = ''
         self.__cityname: str = ''
         self.__render_fin = False
+
+        # instances
         self.build_grayscale = GrayScaleCity()
         self.build_osm = OSMCity()
+        self.ffAPI = FFmpegAPI()
+        self.vp = VideoPlayer()
+        self.sg = SgAPI()
 
-
+        # set init
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setFixedSize(1800, 1000)
-        self.__init()
+        self.setFixedSize(1800, 1200)
         self.setupUi(self)
+        self.__init()
         qdarktheme.setup_theme()
         self.setAcceptDrops(True)
         self._ttest_set_image_to_label()
         self.__connection()
+
 
     @property
     def grid_path(self):
@@ -82,6 +84,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
     @property
     def osm_path(self):
         return self.__osm_path
+
     @osm_path.setter
     def osm_path(self, val):
         # assert isinstance(val, pathlib.path)
@@ -90,15 +93,20 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # 초기상태 저장
     def __init(self):
+        self.scrollAreaWidgetContents.setFixedSize(400, 1000)
+        self.set_usr_combobox()
+        # self.scrollArea.setFixedSize(400, 1000)
+        # self.frame__image.setFixedSize(1200, 1000)
         # self.pushButton__save.setEnabled(0)
-        pass
+
 
     def __connection(self):
         self.toolButton__grid.clicked.connect(lambda x: self.file_dialog('grid_path'))
         self.toolButton__osm.clicked.connect(lambda x: self.file_dialog('osm_path'))
         self.pushButton__build.clicked.connect(self.__slot_btn_build)
         self.pushButton__open.clicked.connect(self.__slot_btn_open)
-
+        self.pushButton__publish.clicked.connect(self.__slot_btn_publish)
+        self.comboBox__usr.currentTextChanged.connect(self.__slot_usr_combobox)
 
         self.frame__img1.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.frame__img2.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -111,13 +119,12 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         self.frame__img3.customContextMenuRequested.connect(self.showContextMenu)
         self.frame__img4.customContextMenuRequested.connect(self.showContextMenu)
 
+
     def showContextMenu(self, pos: QtCore.QPoint):
         # 현재 우클릭한 레이블을 확인
-        print(pos)
         frame_data = self.sender()
         frame_data: QtWidgets.QFrame
-        index = self.frame__img1.sender()
-        print(frame_data, type(frame_data))
+        # print(frame_data, type(frame_data))
 
         # 서브 메뉴 생성
         context_menu = QtWidgets.QMenu(self)
@@ -125,8 +132,8 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         a1 = context_menu.addAction('OverView City MOV')
         a2 = context_menu.addAction('Open Output Folder')
 
-        a1.triggered.connect(self.overview_player)
-        a2.triggered.connect(self.open_folder)
+        a1.triggered.connect(lambda x: self.overview_player(frame_data.objectName()))
+        a2.triggered.connect(lambda x: self.open_folder(frame_data.objectName()))
 
         # 서브 메뉴 표시
         context_menu.exec_(frame_data.mapToGlobal(pos))
@@ -163,7 +170,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
             # 렌더된 이미지 label에 넣어주기 + mov play 준비
             # self.set_img_path()
             # self.__render_fin = True
-            self.set_image_to_label()
+            # self.set_image_to_label()
 
         # osm data일 경우
         if self.__task_type == "osm_path":
@@ -172,7 +179,7 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
             self.build_osm.set_hipfile()
 
             self.textEdit__log.setText("")
-            self.build_osm.create_city()
+            self.build_osm.create_city(self.__img_source_path, self.__form['hip'])
 
             self.textEdit__log.setText("hip 파일 저장")
             self.build_osm.save_hip(self.__form['hip'])
@@ -182,17 +189,94 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
             # 렌더된 이미지 label에 넣어주기 + mov play 준비
             # self.set_img_path()
             # self.__render_fin = True
+            # self.set_image_to_label()
+
+    def __slot_btn_publish(self):
+        # combobox 안에 든 사람이 어떤 id를 가진 사람인지 알아야 ID를 넣을 수 있지.
+        publisher_id = self.sg.find_usr_id(self.comboBox__usr.currentText())
+        self.sg.publish2assetlibrary(self.__cityname, self.__form["hip"], publisher_id)
+
+        asset_id = self.sg.find_asset_id(self.__cityname)
+        # thumbnail_path = os.path.join(self.__render_img_path)
+        thumbnail_path = fr"{filepath}\build_data\osm_path\d0322_t1552\render\osm_testcity_render.mantra1.1050.jpg"
+        self.sg.upload_thumbnail(asset_id, thumbnail_path)
+        self.textEdit__log.setText(f"{self.comboBox__usr.currentText()} 이름으로 shotgrid에 등록 완료!")
+
+    def __slot_usr_combobox(self):
+        if self.comboBox__usr.currentText():
+            print("해당 사용자 이름으로 asset library에 올리기!")
+            self.pushButton__publish.setEnabled(True)
 
 
-    def __slot_image_Rclick(self, mov_path):
-        print(mov_path)
-        pass
 
-    def overview_player(self):
-        print('mov play hereeeee')
-    def open_folder(self):
-        print('open folder ')
-        pass
+    # TODO >> MOV 만드는거 상대경로로 바꾸기!!!!
+    # TODO >> 함수 실행 위치 build btn 클릭 렌더 이후로 바꿀 것!
+    def make_mov(self, wedge_num: int = 4):
+        # self.ffAPI.make_jpg_to_mov()
+        self.__form['hip'] = r"D:\git_workspace\city_builder\build_data\grid_path_t1124"
+        for wedge in range(wedge_num):
+            seq_path = os.path.join(self.__form['hip'], "render", str(wedge))
+            start_num = "1001"
+            seq_name = f"grayscale_t1124_render.{wedge}.%4d.jpg"
+            mov_name = "output.mov"
+            self.ffAPI.make_jpg_to_mov(seq_path, start_num, seq_name, mov_name)
+            self.__mov_path_lst.append(os.path.join(seq_path, mov_name))
+        print(self.__mov_path_lst)
+
+    def overview_player(self, frame_name):
+        # self.make_mov()
+        self.__mov_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\0\output.mov")
+        self.__mov_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\1\output.mov")
+        self.__mov_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\2\output.mov")
+        self.__mov_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\3\output.mov")
+        print(frame_name)
+        frame_name: QtWidgets.QFrame
+
+        if frame_name == "frame__img1":
+            self.vp.set_path(self.__mov_path_lst[0])
+            print('img1 mov play hereeeee')
+
+        if frame_name == "frame__img2":
+            self.vp.set_path(self.__mov_path_lst[1])
+            print('img2 mov play hereeeee')
+
+        if frame_name == "frame__img3":
+            self.vp.set_path(self.__mov_path_lst[2])
+            print('img3 mov play hereeee')
+
+        if frame_name == "frame__img4":
+            self.vp.set_path(self.__mov_path_lst[3])
+            print('img4 mov play hereeeee')
+
+        self.vp.show()
+
+
+    def open_folder(self, frame_name):
+        # Windows에서 파일 탐색기 열기
+        self.__seq_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\0")
+        self.__seq_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\1")
+        self.__seq_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\2")
+        self.__seq_path_lst.append(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\3")
+        print(frame_name)
+        frame_name: QtWidgets.QFrame
+
+        if frame_name == "frame__img1":
+            subprocess.Popen(['explorer', self.__seq_path_lst[0]])
+            print('img1 file explorer open')
+
+        if frame_name == "frame__img2":
+            subprocess.Popen(['explorer', self.__seq_path_lst[1]])
+            print('img2 mov play hereeeee')
+
+        if frame_name == "frame__img3":
+            subprocess.Popen(['explorer', self.__seq_path_lst[2]])
+            print('img3 mov play hereeee')
+
+        if frame_name == "frame__img4":
+            subprocess.Popen(['explorer', self.__seq_path_lst[3]])
+            print('img4 mov play hereeeee')
+
+
 
     def control_log(self):
         self.textEdit__log.setText("Grid / OSM 이미지를 넣어주세요!")
@@ -230,10 +314,16 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # grid / osm file import 위한 file dialog
     def file_dialog(self, lineedit_type, parent=None):
+        if lineedit_type == 'grid_path':
+            _filter = ("Image Files (*.png *.jpg *.bmp)")
+
+        if lineedit_type == 'osm_path':
+            _filter = ("OSM Files (*.osm)")
+
         files = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption='Get File',
-            filter='*.jpg',
+            filter=_filter,
             dir='~/'
         )
         print(lineedit_type)
@@ -267,9 +357,13 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def _ttest_set_image_to_label(self, task="grayscale", wedge_num: int = 4):
         for wedge in range(wedge_num):
-            render_img_name = f"{task}_t0750_render.{wedge}.1001.jpg"
+            # render_img_name = f"{task}_t0750_render.{wedge}.1001.jpg"
             # render_dpath = f"{self.__form['hip']}\
-            render_img_path = os.path.join(r"E:\git_workspace\city_builder\build_data\grid_path\t1645", 'render', str(wedge), render_img_name)
+            # render_img_path = os.path.join(r"E:\git_workspace\city_builder\build_data\grid_path\t1645", 'render', str(wedge), render_img_name)
+
+
+            render_img_name = f"{task}_t1124_render.{wedge}.1001.jpg"
+            render_img_path = os.path.join(r"D:\git_workspace\city_builder\build_data\grid_path_t1124", 'render', str(wedge), render_img_name)
 
             self.__render_img_path[wedge] = render_img_path
 
@@ -292,6 +386,14 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
 
         print(self.__render_img_path)
 
+    def set_usr_combobox(self):
+        self.comboBox__usr.setEnabled(True)
+        user_lst = self.sg.people_lst
+        # user_lst:  [{'type': 'HumanUser', 'id': '' , 'name': ''}]
+        for usr in user_lst:
+            self.comboBox__usr.addItem(usr["name"])
+
+
     def set_image_to_label(self, img_cnt: int = 4):
         print('일단 set text로 구현해두고 render 성공하면 이미지 넣는걸로!')
         if self.__task_type == "grid_path":
@@ -310,9 +412,6 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
             # render_qimg = QtGui.QPixmap(render_img_path)
             # self.__render_img_path[wedge] = render_qimg
 
-    # drag and drop 구현
-    def slot_drag_drop(self):
-        pass
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -324,7 +423,18 @@ class CityBuilder(QtWidgets.QMainWindow, Ui_MainWindow):
         urls = event.mimeData().urls()
         if urls:
             file_path = urls[0].toLocalFile()
-            self.file_path_label.setText(file_path)
+            self.label__dd_grayscale.setText(file_path)
+            self.label__dd_osm.setText(file_path)
+
+
+
+
+
+class Grayscale_Controller:
+    pass
+
+class OSM_Controller:
+    pass
 
 
 if __name__ == '__main__':

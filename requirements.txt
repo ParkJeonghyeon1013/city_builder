@@ -1,2 +1,3 @@
 qtawesome
 pyqtdarktheme
+shotgun-api3

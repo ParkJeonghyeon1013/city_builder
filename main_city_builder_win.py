@@ -1,48 +1,31 @@
+from PySide2.QtWidgets import QApplication, QLabel
+from PySide2.QtGui import QColor
 
+class ClickableLabel(QLabel):
+    def __init__(self, text):
+        super().__init__(text)
+        self.setStyleSheet("border: 2px solid black; padding: 5px;")
+        self.setMouseTracking(True)
+        self.clicked = False
 
-import sys
-from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
-from PySide2 import QtGui
+    def enterEvent(self, event):
+        if not self.clicked:
+            self.setStyleSheet("border: 2px solid blue; padding: 5px;")
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
+    def leaveEvent(self, event):
+        if not self.clicked:
+            self.setStyleSheet("border: 2px solid black; padding: 5px;")
 
-    def initUI(self):
-        self.setWindowTitle("Drag and Drop Example")
-        self.setGeometry(300, 300, 400, 200)
+    def mousePressEvent(self, event):
+        self.setStyleSheet("border: 2px solid red; padding: 5px;")
+        self.clicked = True
 
-        # 파일 경로를 보여줄 라벨
-        self.file_path_label = QLabel("Drag and drop file here", self)
-        self.file_path_label.setAlignment(QtGui.Qt.AlignCenter)
-
-        # 메인 윈도우의 레이아웃 설정
-        layout = QVBoxLayout()
-        layout.addWidget(self.file_path_label)
-
-        # 위젯에 레이아웃 설정
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-
-        # 그래그 앤 드롭 이벤트 핸들링
-        self.setAcceptDrops(True)
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.accept()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        urls = event.mimeData().urls()
-        if urls:
-            file_path = urls[0].toLocalFile()
-            self.file_path_label.setText(file_path)
+    def mouseReleaseEvent(self, event):
+        self.setStyleSheet("border: 2px solid black; padding: 5px;")
+        self.clicked = False
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mainWindow = MainWindow()
-    mainWindow.show()
-    sys.exit(app.exec_())
+    app = QApplication([])
+    label = ClickableLabel("Click me")
+    label.show()
+    app.exec_()

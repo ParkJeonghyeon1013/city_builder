@@ -58,7 +58,7 @@
                     <x>0</x>
                     <y>0</y>
                     <width>498</width>
-                    <height>579</height>
+                    <height>602</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_18">
@@ -614,8 +614,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>229</width>
-                    <height>220</height>
+                    <width>181</width>
+                    <height>185</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_14">
@@ -971,62 +971,6 @@
           </layout>
          </widget>
         </item>
-        <item>
-         <widget class="QFrame" name="frame">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>USD hieararchy</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="0" column="0">
-               <widget class="QTreeView" name="treeView"/>
-              </item>
-              <item row="0" column="1">
-               <widget class="QTreeWidget" name="treeWidget">
-                <property name="columnCount">
-                 <number>5</number>
-                </property>
-                <column>
-                 <property name="text">
-                  <string>Scene Graph Path</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Primitive Type</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Variants</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Kind</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Draw Mode</string>
-                 </property>
-                </column>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -1039,7 +983,7 @@
      <x>0</x>
      <y>0</y>
      <width>1653</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
