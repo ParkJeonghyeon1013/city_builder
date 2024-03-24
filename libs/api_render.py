@@ -24,9 +24,23 @@ def start_render(self):
         hq_server.newjob(self.set_hrender)
 
 
-hq = xmlrpc.client.ServerProxy('http://192.168.5.26:5000')
 
 try:
-    hq.ping()
+    # hq.ping()
+    hq_server = xc.ServerProxy("http://192.168.5.26:5000")
+    print('hq 연결됨')
+    res = {
+        "name": "citybuild",
+        "shell": "bash",
+        "command": (
+            "cd /opt/hfs19.5;"
+            "source houdini_setup;"
+            "hrender -e -f 1001 1200 -v -d /out/mantra1 /192.168.5.10/workspace/d0323_t1218/feedback3.hip;"
+        )
+    }
+    hq_client = xmlrpc.client.ServerProxy('http://192.168.5.26:5000')
+    job_num = hq_server.newjob(res)
+    print(hq_client)
+    print(job_num)
 except ConnectionRefusedError:
     print('failed...')

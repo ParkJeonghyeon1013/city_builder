@@ -37,7 +37,7 @@ class GrayScaleCity:
         # set frame range - 5s [1001-1121]
 
         start_frame: int = 1001
-        end_frame: int = 1120
+        end_frame: int = 1062
         fps: int = 24
         hou.setFps(fps)
         frame_set = f"`{start_frame -1}/$FPS` `{end_frame}/$FPS`"
@@ -563,6 +563,7 @@ class GrayScaleCity:
 
         n_file = hou.node('/obj/topnet1/create_buildings/s/s/incoming')
         n_file.parm("file").set("`@pdg_input`")
+        n_file.setTemplateFlag(False)
         self.align_node_pos(n_out, n_file.position(), 0, -10)
 
 

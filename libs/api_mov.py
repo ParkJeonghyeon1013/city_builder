@@ -28,6 +28,7 @@ class VideoWidget(QtMultimediaWidgets.QVideoWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+        self.setStyleSheet("background-color: rgb(0, 0, 0);")
         palette = self.palette()
         palette.setColor(QtGui.QPalette.Window, QtCore.Qt.black)
         self.setPalette(palette)
@@ -37,6 +38,9 @@ class VideoPlayer(QtWidgets.QWidget):
     def __init__(self, parnet=None):
         super().__init__(parnet)
         # variable
+        self.flag_stop = False
+        self.url_lst = list()
+        self.video_lst = list()
         self.video_path: os.path = ""
 
         self.setWindowTitle("Video Player")
@@ -49,29 +53,27 @@ class VideoPlayer(QtWidgets.QWidget):
         qdarktheme.setup_theme()
         self.__connection()
 
+
     def __set_player(self):
         self.video_widget = VideoWidget()
         self.__player = QtMultimedia.QMediaPlayer()
-
         self.__player.setVideoOutput(self.video_widget)
-
         self.playlist = QtMultimedia.QMediaPlaylist(self.__player)
-        # self.__player.setAutoPlay(True)
 
     def __set_ui(self):
         self.__btn_play = QtWidgets.QPushButton("Play")
         self.__btn_stop = QtWidgets.QPushButton("Stop")
-        self.__btn_loop = QtWidgets.QPushButton("Loop")
+        self.__btn_close = QtWidgets.QPushButton("Close")
 
         hbox_layout_btns = QtWidgets.QHBoxLayout()
         hbox_layout_btns.addWidget(self.__btn_play)
         hbox_layout_btns.addWidget(self.__btn_stop)
-        hbox_layout_btns.addWidget(self.__btn_loop)
+        hbox_layout_btns.addWidget(self.__btn_close)
 
         self.__label_name = QtWidgets.QLabel(f"{self.video_path}")
         self.__label_name.setText(self.video_path)
-        self.__label_name.setFixedSize(500, 100)
-        print(self.__label_name.size())
+        self.__label_name.setFixedSize(500, 70)
+
         self.video_widget.setFixedSize(500, 500)
         vbox_layout = QtWidgets.QVBoxLayout()
         vbox_layout.addWidget(self.__label_name)
@@ -86,50 +88,66 @@ class VideoPlayer(QtWidgets.QWidget):
     def __connection(self):
         self.__btn_play.clicked.connect(self.slot_play_btn)
         self.__btn_stop.clicked.connect(self.slot_stop_btn)
-        self.__btn_loop.clicked.connect(self.slot_loop_btn)
+        self.__btn_close.clicked.connect(self.slot_close_btn)
         self.__player.stateChanged.connect(self.slot_state)
 
+    # Video play 다 끝나면 다시 재생해주기
     def slot_state(self, state):
-        # if state ==
-        pass
+        if state == QtMultimedia.QMediaPlayer.State.StoppedState:
+            self.__player.play()
+            print("한바퀴 끝났다 loop 플래그 켜져있으면 play 해주는 방식으로 loop를 구현하자.")
 
+    # playlist에 콘텐츠 add 하기
+    def set_playlist(self, video_lst):
+        for video_path in video_lst:
+            self.video_lst.append(video_path)
+            url = QtCore.QUrl.fromLocalFile(video_path)
+            print(url, type(url))
+            self.url_lst.append(url)
+            self.playlist.addMedia(url)
 
+    def set_media_num(self, num):
+        self.__player.setMedia(self.url_lst[num])
+        self.__label_name.setText(self.video_lst[1])
 
     def __check_video_exist(self):
         pass
 
     def slot_play_btn(self):
-        print("\nplay 버튼 눌렀다 video START")
-        print("만약 정지 누르고 시작누르면 resume으로 구현할까?")
-
         # QT_MULTIMEDIA_PREFERRED_PLUGINS
         # "windowsmediafoundation" or "directshow"
 
-        url = QtCore.QUrl.fromLocalFile(self.video_path)
-        print(url, type(url))
-        self.__player.setMedia(url)
-        self.playlist.addMedia(url)
+        self.set_playlist([])
         print('add 완료')
+
+        # self.set_media_num
         self.video_widget.setVisible(True)
         self.__player.play()
-        print("이 게 찍 힐 까")
 
         a = self.__player.error()
         print(a)
 
     def slot_stop_btn(self):
-        self.__player.stop()
+        if self.flag_stop is False:
+            self.__player.pause()
+            self.flag_stop = True
+            return
+        if self.flag_stop is True:
+            self.__player.play()
+            self.flag_stop = False
+            return
+
         print("\n재생 정지")
 
-    def slot_loop_btn(self):
-        self.__player.setLoopCount(-1)
+    def slot_close_btn(self):
+        self.close()
 
-        print("\nloop 버튼 눌렀다 video Loop")
+    def closeEvent(self, event):
+        self.__player.pause()
 
 class FFmpegAPI:
     def __init__(self):
         self.output_video_path = ""
-
 
     # ffmpeg -f [image2] -framerate [24] -i [C:\seq\%3d.jpg] -c:v [libx264] -r [24] [C:\seq\output.mp4]
     def make_jpg_to_mov(self,
@@ -179,18 +197,18 @@ class FFmpegAPI:
             subprocess.run("y", shell=True)
         self.output_video_path = os.path.join(output_path, mov_name)
 
+
     def return_video_path(self):
         return self.output_video_path
-#
+
 if __name__ == "__main__":
     # ffAPI = FFmpegAPI()
     # ffAPI.make_jpg_to_mov(r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\0",
     #                       "1001", "grayscale_t1124_render.0.%4d.jpg", "output.mov")
     # output_video_path = ffAPI.return_video_path()
 
-    output_video_path = r"D:\git_workspace\city_builder\build_data\grid_path_t1124\render\0\output.mov"
     app = QtWidgets.QApplication()
-    vp= VideoPlayer()
-    vp.set_path(output_video_path)
+    vp = VideoPlayer()
+    vp.set_media_num(0)
     vp.show()
     app.exec_()
