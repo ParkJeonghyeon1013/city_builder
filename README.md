@@ -1,9 +1,5 @@
 ## **Project name**
-
-: 음.. 일단 USD IO이긴 한데 변경해보자.. 
-
-Weather village? 
-Village Builder? City builder.. ?
+City builder
 
 ## **Goal**
 
@@ -16,7 +12,7 @@ houdini / USD 익히기
 수업에서 배운 내용 응용
 stand alone tool 개발 (= 자동화 툴)
 - **사용툴:** 
-houdini / shotgrid / slack / pyhcarm + [maya]
+houdini / shotgrid / pycharm + [maya]
 
 ---
 
